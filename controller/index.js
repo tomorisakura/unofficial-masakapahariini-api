@@ -1,7 +1,6 @@
 const baseUrl = require('../constant/url');
 const services = require('../helper/service');
 const cheerio = require('cheerio');
-const { use } = require('../route');
 
 const fetchRecipes = (req, res, response) => {
     try {
@@ -151,15 +150,18 @@ const Controller = {
             const key = req.params.key;
             const response = await services.fetchService(`${baseUrl}/resep/${key}`);
             const $ = cheerio.load(response.data);
-            let metaDuration, metaServings, metaDificulty;
-            let title , thumb, user, datePublished, desc;
-            let parseDuration, parseServings, parseDificulty;
+            let metaDuration, metaServings, metaDificulty, metaIngredient;
+            let title , thumb, user, datePublished, desc, quantity, ingredient, ingredients;
+            let parseDuration, parseServings, parseDificulty, parseIngredient;
             let duration, servings, dificulty;
             let servingsArr = [];
             let difficultyArr = [];
-            let detail_list = [];
+            let object = {};
             const elementHeader = $('#recipe-header');
             const elementDesc = $('.the-content').first();
+            const elementNeeded = $('.needed-products');
+            const elementIngredients = $('#ingredients-section');
+            const elementTutorial = $('#steps-section');
             title = elementHeader.find('.title').text();
             thumb = elementHeader.find('.featured-img').attr('data-lazy-src');
             user = elementHeader.find('small.meta').find('.author').text();
@@ -183,24 +185,67 @@ const Controller = {
                     if(r !== "") difficultyArr.push(r);
                 });
                 dificulty = Array.from(difficultyArr).join(' ');
-                detail_list.push({
-                    title : title,
-                    thumb : thumb,
-                    servings : servings,
-                    time : duration,
-                    dificulty : dificulty,
-                    user : {
-                        name : user,
-                        published : datePublished
-                    }
+
+                object.title = title;
+                object.thumb = thumb;
+                object.servings = servings;
+                object.times = duration;
+                object.dificulty = dificulty;
+                object.author = {user, datePublished};
+            });
+            
+            elementDesc.each((i, e) => {
+                desc = $(e).find('p').text();
+                object.desc = desc;
+            });
+
+            let thumb_item, need_item;
+            let neededArr = [];
+            elementNeeded.find('.d-inline-flex').find('.justify-content-around').each((i, e) => {
+                thumb_item = $(e).find('.product-img').find('img').attr('data-lazy-src');
+                need_item = $(e).find('.product-info').find('.product-name').text();
+                neededArr.push({
+                    item_name : need_item,
+                    thumb_item : thumb_item
                 });
             });
 
-            elementDesc.each((i, e) => {
-                desc = $(e).find('p').text();
-                detail_list.push({ desc : desc });
+            object.needItem = neededArr;
+
+            let ingredientsArr = [];
+            elementIngredients.find('.ingredient-groups').find('.ingredients').find('.ingredient-item').each((i, e) => {
+                const term = [];
+                quantity = $(e).find('.quantity').text();
+                metaIngredient = $(e).find('.ingredient').text();
+                parseIngredient = metaIngredient.split('\n')[1].split(' ');
+                parseIngredient.forEach(r => {
+                    if(r !== "") term.push(r);
+                });
+                ingredient = Array.from(term).join(' ');
+                ingredients = `${quantity} ${ingredient}`
+                ingredientsArr.push(ingredients)
             });
-            res.send(detail_list);
+            
+            object.ingredient = ingredientsArr;
+            let step, resultStep, thumb_step;
+            let stepArr = [];
+            elementTutorial.find('.steps').find('.step').each((i, e) => {
+                step = $(e).find('.step-description').find('p').text();
+                thumb_step = $(e).find('.step-wrapper').find('.step-image-wrapper').find('img').attr('data-lazy-src');
+                resultStep = `${i + 1} ${step}`
+                stepArr.push({
+                    thumb : thumb_step,
+                    step : resultStep
+                });
+            });
+
+            object.step = stepArr;
+
+            res.send({
+                method : req.method,
+                status : true,
+                results : object
+            });
 
         } catch (error) {
             throw error;
