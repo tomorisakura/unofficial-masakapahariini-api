@@ -1,5 +1,5 @@
 const baseUrl = require('../constant/url');
-const services = require('../helper/service');
+const services = require('../services/service');
 const cheerio = require('cheerio');
 
 const fetchRecipes = (req, res, response) => {
