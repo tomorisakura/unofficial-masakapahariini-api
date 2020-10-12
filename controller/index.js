@@ -1,6 +1,7 @@
 const baseUrl = require('../constant/url');
 const services = require('../helper/service');
 const cheerio = require('cheerio');
+const { use } = require('../route');
 
 const fetchRecipes = (req, res, response) => {
     try {
@@ -150,14 +151,19 @@ const Controller = {
             const key = req.params.key;
             const response = await services.fetchService(`${baseUrl}/resep/${key}`);
             const $ = cheerio.load(response.data);
-            let title, metaDuration, metaServings, metaDificulty;
+            let metaDuration, metaServings, metaDificulty;
+            let title , thumb, user, datePublished, desc;
             let parseDuration, parseServings, parseDificulty;
             let duration, servings, dificulty;
             let servingsArr = [];
             let difficultyArr = [];
             let detail_list = [];
             const elementHeader = $('#recipe-header');
+            const elementDesc = $('.the-content').first();
             title = elementHeader.find('.title').text();
+            thumb = elementHeader.find('.featured-img').attr('data-lazy-src');
+            user = elementHeader.find('small.meta').find('.author').text();
+            datePublished = elementHeader.find('small.meta').find('.date').text();
 
             elementHeader.find('.recipe-info').each((i, e) => {
                 metaDuration = $(e).find('.time').find('small').text();
@@ -179,13 +185,22 @@ const Controller = {
                 dificulty = Array.from(difficultyArr).join(' ');
                 detail_list.push({
                     title : title,
+                    thumb : thumb,
                     servings : servings,
                     time : duration,
-                    dificulty : dificulty
+                    dificulty : dificulty,
+                    user : {
+                        name : user,
+                        published : datePublished
+                    }
                 });
             });
-            res.send(detail_list);
 
+            elementDesc.each((i, e) => {
+                desc = $(e).find('p').text();
+                detail_list.push({ desc : desc });
+            });
+            res.send(detail_list);
 
         } catch (error) {
             throw error;
