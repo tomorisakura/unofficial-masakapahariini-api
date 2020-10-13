@@ -28,6 +28,9 @@ route.get('/api/category/:key', controller.recipesByCategory);
 route.get('/api/category/:key/:page', controller.recipesCategoryByPage);
 route.get('/api/recipe/:key', controller.recipesDetail);
 route.get('/api/search/', controller.searchRecipes);
+route.get('/api/article/categorys', controller.articleCategory);
+route.get('/api/article/:key', controller.articleByCategory);
+route.get('/api/article/:tag/:key', controller.articleDetails);
 
 route.get('*', (req, res) => {
     res.status(404).json({

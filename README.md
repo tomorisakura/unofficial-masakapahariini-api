@@ -49,14 +49,33 @@ Already done
 ```
 /api/search/?q=tahu
 ```
+
+* `article-category` done
+
+```
+/api/categorys
+```
+
+* `article-by-category` done
+
+```
+/api/article/:key
+```
+
+- __example__
+
+```
+/api/article/kiat-belajar-masak-untuk-pemula
+```
+
 ---
 
 Undone
 
-* `articles` ~~done~~
+* `articles-details` ~~done~~
 
 #### Credits
 
-[Reski Arianto](https://github.com/tomorisakura)
+[Reski Arianto](https://deviantart.com/hakureix)
 
 ---

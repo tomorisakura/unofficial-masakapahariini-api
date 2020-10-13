@@ -173,7 +173,7 @@ const Controller = {
                     parseDuration = metaDuration.split('\n')[1].split(' ');
                     parseDuration.forEach( r => {
                         if(r !== "") duration = r;
-                    });   
+                    });
                 }
                 metaServings = $(e).find('.servings').find('small').text();
                 parseServings = metaServings.split('\n')[1].split(' ');
@@ -276,10 +276,10 @@ const Controller = {
                 search_list.push({
                     title : title,
                     thumb : thumb,
+                    key : key,
                     times : duration,
                     serving : serving,
                     difficulty : difficulty,
-                    key : key
                 });
             });
 
@@ -287,6 +287,104 @@ const Controller = {
                 method : req.method,
                 status : true,
                 results : search_list
+            });
+
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    articleCategory : async (req, res) => {
+        try {
+            const response = await services.fetchService(baseUrl);
+            const $ = cheerio.load(response.data);
+
+            const element = $('#menu-item-286');
+            let title, key;
+            let article_category_list = [];
+            element.find('.sub-menu').find('.menu-item').each((i, e) => {
+                title = $(e).find('a').text();
+                key = $(e).find('a').attr('href').split('/');
+                article_category_list.push({
+                    title : title,
+                    key : key[3]
+                })
+            });
+
+            res.send({
+                method : req.method,
+                status : true,
+                results : article_category_list
+            });
+
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    articleByCategory : async (req, res) => {
+        try {
+            const key = req.params.key;
+            const response = await services.fetchService(`${baseUrl}/${key}`);
+
+            const $ = cheerio.load(response.data);
+            const element = $('#category-content');
+            let title , thumb, tags, keys;
+            let article_list = [];
+            element.find('.category-posts').find('.post-col').each((i, e) => {
+                title = $(e).find('.inner-block').find('a').attr('data-tracking-value');
+                thumb = $(e).find('.inner-block').find('a').find('.thumb-wrapper').find('img').attr('data-lazy-src');
+                tags = $(e).find('.post-info').find('small').text();
+                keys = $(e).find('.inner-block').find('a').attr('href').split('/')
+                article_list.push({
+                    title : title,
+                    thumb : thumb,
+                    tags : tags,
+                    key : keys[4]
+                });
+            });
+
+            res.send({
+                method : req.method,
+                status : true,
+                results : article_list
+            });
+
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    articleDetails : async (req, res) => {
+        try {
+            const tag = req.params.tag;
+            const key = req.params.key;
+            const response = await services.fetchService(`${baseUrl}/${tag}/${key}`);
+
+            const $ = cheerio.load(response.data);
+            const element = $('#main');
+
+            let title, thumbs, author, published, description;
+            let article_object = {};
+            title = element.find('.article-header').find('.title').text();
+            author = element.find('small').find('.author').text();
+            published = element.find('small').find('.date').text();
+            thumbs = element.find('.featured-img-wrapper').find('img').attr('data-lazy-src');
+
+            element.find('.the-content').each((i, e) => {
+                description = $(e).find('p').text();
+            });
+
+            article_object.title = title;
+            article_object.thumb = thumbs;
+            article_object.author = author;
+            article_object.date_published = published;
+            article_object.description = description;
+
+            res.send({
+                method : req.method,
+                status : true,
+                results : article_object
             });
 
         } catch (error) {
