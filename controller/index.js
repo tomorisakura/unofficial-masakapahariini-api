@@ -169,10 +169,12 @@ const Controller = {
 
             elementHeader.find('.recipe-info').each((i, e) => {
                 metaDuration = $(e).find('.time').find('small').text();
-                parseDuration = metaDuration.split('\n')[1].split(' ');
-                parseDuration.forEach( r => {
-                    if(r !== "") duration = r;
-                });
+                if (metaDuration.includes('\n')) {
+                    parseDuration = metaDuration.split('\n')[1].split(' ');
+                    parseDuration.forEach( r => {
+                        if(r !== "") duration = r;
+                    });   
+                }
                 metaServings = $(e).find('.servings').find('small').text();
                 parseServings = metaServings.split('\n')[1].split(' ');
                 parseServings.forEach(r => {
@@ -245,6 +247,46 @@ const Controller = {
                 method : req.method,
                 status : true,
                 results : object
+            });
+
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    searchRecipes : async (req, res) => {
+        try {
+            const query = req.query.q;
+            console.log(query);
+            const response = await services.fetchService(`${baseUrl}/?s=${query}`);
+            const $ = cheerio.load(response.data);
+            const element = $('#search-content');
+
+            let title, url, key, thumb, duration, serving, difficulty;
+            let search_list = [];
+            element.find('.results-row').find('.post-col').each((i, e) => {
+                title = $(e).find('a').attr('data-tracking-value');
+                url = $(e).find('a').attr('href').split('/');
+                thumb = $(e).find('.thumb-wrapper').find('img').last().attr('data-lazy-src');
+                key = url[4];
+                duration = $(e).find('.recipe-info').find('.time').find('small').text();
+                serving = $(e).find('.recipe-info').find('.servings').find('small').text();
+                difficulty = $(e).find('.recipe-info').find('.difficulty').find('small').text();
+
+                search_list.push({
+                    title : title,
+                    thumb : thumb,
+                    times : duration,
+                    serving : serving,
+                    difficulty : difficulty,
+                    key : key
+                });
+            });
+
+            res.send({
+                method : req.method,
+                status : true,
+                results : search_list
             });
 
         } catch (error) {

@@ -1,10 +1,12 @@
-### Masakapahariini Api 🧙 🍳
+## Masakapahariini Api 🧙 🍳
 ---
 
-Food recipes api build with __cheerio__ and __Node js__ 🌸
+Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js__ 🌸
 
 ---
 **Status** : On Progress
+
+### Documentation
 
 Already done
 
@@ -36,10 +38,25 @@ Already done
 /api/recipe/:key
 ```
 
+* `search-recipes` done
+
+```
+/api/search/?q=parameter
+```
+
+- __example__
+
+```
+/api/search/?q=tahu
+```
+---
+
 Undone
 
-* `search-recipes` ~~done~~
-
 * `articles` ~~done~~
+
+#### Credits
+
+[Reski Arianto](https://github.com/tomorisakura)
 
 ---

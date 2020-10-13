@@ -27,12 +27,14 @@ route.get('/api/articles', controller.article);
 route.get('/api/category/:key', controller.recipesByCategory);
 route.get('/api/category/:key/:page', controller.recipesCategoryByPage);
 route.get('/api/recipe/:key', controller.recipesDetail);
+route.get('/api/search/', controller.searchRecipes);
 
 route.get('*', (req, res) => {
     res.status(404).json({
         method : req.method,
-        message : 'cant find spesific url',
-        status : false
+        message : 'cant find spesific endpoint',
+        status : false,
+        code : 404,
     });
 });
 
