@@ -1,5 +1,5 @@
 const baseUrl = require('../constant/url');
-const services = require('../services/service');
+const services = require('../helper/service');
 const cheerio = require('cheerio');
 
 const fetchRecipes = (req, res, response) => {
@@ -229,16 +229,12 @@ const Controller = {
             });
             
             object.ingredient = ingredientsArr;
-            let step, resultStep, thumb_step;
+            let step, resultStep;
             let stepArr = [];
             elementTutorial.find('.steps').find('.step').each((i, e) => {
                 step = $(e).find('.step-description').find('p').text();
-                thumb_step = $(e).find('.step-wrapper').find('.step-image-wrapper').find('img').attr('data-lazy-src');
                 resultStep = `${i + 1} ${step}`
-                stepArr.push({
-                    thumb : thumb_step,
-                    step : resultStep
-                });
+                stepArr.push(resultStep);
             });
 
             object.step = stepArr;

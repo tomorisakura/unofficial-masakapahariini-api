@@ -4,7 +4,11 @@ const route = express.Router();
 const controller = require('../controller/index');
 
 route.get('/', (req, res) => {
-    res.send('Hello there 👋');
+    res.send({
+        greet : 'Hello there 👋',
+        message : 'visit link on bellow for documentation about masak apa hari ini 👇',
+        documentation : 'https://github.com/tomorisakura/unofficial-masakapahariini-api'
+    });
 });
 
 route.get('/api', (req, res) => {
@@ -23,7 +27,7 @@ route.get('/api', (req, res) => {
 route.get('/api/recipes', controller.newRecipes);
 route.get('/api/recipes/:page', controller.newRecipesByPage);
 route.get('/api/categorys', controller.category);
-route.get('/api/articles', controller.article);
+route.get('/api/articles/new', controller.article);
 route.get('/api/category/:key', controller.recipesByCategory);
 route.get('/api/category/:key/:page', controller.recipesCategoryByPage);
 route.get('/api/recipe/:key', controller.recipesDetail);
