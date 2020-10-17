@@ -11,6 +11,9 @@
   ],
   "author": "Reski Arianto",
   "license": "ISC",
+  "engines": {
+    "node": "14.13.1"
+  },
   "dependencies": {
     "axios": "^0.20.0",
     "cheerio": "^1.0.0-rc.3",

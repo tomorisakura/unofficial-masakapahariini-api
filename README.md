@@ -68,14 +68,32 @@ Already done
 /api/article/kiat-belajar-masak-untuk-pemula
 ```
 
+* `article` done
+
+```
+/api/articles/new
+```
+
+* `article-details` done
+
+```
+/api/article/:tag/:key
+```
+
+- __example__
+
+```
+/api/article/kiat-belajar-masak-untuk-pemula/cerita-di-balik-bumbu-semur-di-nusantara
+```
+
 ---
 
 Undone
 
-* `articles-details` ~~done~~
+--
 
 #### Credits
 
-[Reski Arianto](https://deviantart.com/hakureix)
+Build With 💙
 
 ---
