@@ -26,14 +26,14 @@ route.get('/api', (req, res) => {
 
 route.get('/api/recipes', controller.newRecipes);
 route.get('/api/recipes/:page', controller.newRecipesByPage);
-route.get('/api/categorys', controller.category);
+route.get('/api/categorys/recipes', controller.category);
 route.get('/api/articles/new', controller.article);
-route.get('/api/category/:key', controller.recipesByCategory);
-route.get('/api/category/:key/:page', controller.recipesCategoryByPage);
+route.get('/api/categorys/recipes/:key', controller.recipesByCategory);
+route.get('/api/categorys/recipes/:key/:page', controller.recipesCategoryByPage);
 route.get('/api/recipe/:key', controller.recipesDetail);
 route.get('/api/search/', controller.searchRecipes);
-route.get('/api/article/categorys', controller.articleCategory);
-route.get('/api/article/:key', controller.articleByCategory);
+route.get('/api/categorys/article', controller.articleCategory);
+route.get('/api/categorys/article/:key', controller.articleByCategory);
 route.get('/api/article/:tag/:key', controller.articleDetails);
 
 route.get('*', (req, res) => {

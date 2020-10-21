@@ -25,13 +25,13 @@ Base Url : https://masak-apa.vercel.app
 * `recipes-by-category` done
 
 ```
-/api/category/:key
+/api/categorys/recipes/:key
 ```
 
 * `recipes-category` done
 
 ```
-/api/categorys
+/api/categorys/recipes
 ```
 
 * `recipes-detail` done
@@ -55,19 +55,19 @@ Base Url : https://masak-apa.vercel.app
 * `article-category` done
 
 ```
-/api/categorys
+/api/categorys/article
 ```
 
 * `article-by-category` done
 
 ```
-/api/article/:key
+/api/categorys/article/:key
 ```
 
 - __example__
 
 ```
-/api/article/kiat-belajar-masak-untuk-pemula
+/api/categorys/article/makanan-gaya-hidup
 ```
 
 * `article` done
@@ -85,7 +85,7 @@ Base Url : https://masak-apa.vercel.app
 - __example__
 
 ```
-/api/article/kiat-belajar-masak-untuk-pemula/cerita-di-balik-bumbu-semur-di-nusantara
+/api/article/makanan-gaya-hidup/papeda-dan-masakan-indonesia-timur
 ```
 
 ---
