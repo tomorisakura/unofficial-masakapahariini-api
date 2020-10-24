@@ -164,6 +164,9 @@ const Controller = {
             const elementTutorial = $('#steps-section');
             title = elementHeader.find('.title').text();
             thumb = elementHeader.find('.featured-img').attr('data-lazy-src');
+            if (thumb === undefined) {
+                thumb = null;
+            }
             user = elementHeader.find('small.meta').find('.author').text();
             datePublished = elementHeader.find('small.meta').find('.date').text();
 
@@ -279,10 +282,12 @@ const Controller = {
                 });
             });
 
+            const item = search_list.filter(result => result.times !== "");
+
             res.send({
                 method : req.method,
                 status : true,
-                results : search_list
+                results : item
             });
 
         } catch (error) {
