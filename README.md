@@ -10,7 +10,7 @@ Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js_
 
 Already done
 
-Base Url : https://masak-apa.vercel.app
+Base Url : https://masak-apa.tomorisakura.vercel.app
 
 * `new-recipes` done
 ```

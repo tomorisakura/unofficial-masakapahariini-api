@@ -15,7 +15,7 @@ route.get('/api', (req, res) => {
     res.send({
         method : req.method,
         message : 'Hello there 🌹',
-        status : 'On Progress',
+        status : 'On Progress 🚀',
         lets_connected : {
             github : 'https://github.com/tomorisakura',
             dribbble : 'https://dribbble.com/grevimsx',
