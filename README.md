@@ -7,10 +7,19 @@ Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js_
 **Status** : On Progress
 
 ### Documentation
+---
 
-Already done
+| Field | Description |
+| ------ | ----------- |
+| key   | is a unique key used to access the next endpoint example  ```key : 'resep-sambal-teri-petai'``` |
+| page | load a next of data |
+| tag    | is unique key of a article category to hit a detail of article|
 
-Base Url : https://masak-apa.tomorisakura.vercel.app
+
+
+### Endpoint Usage
+---
+**Base Url** : `https://masak-apa.tomorisakura.vercel.app`
 
 * `new-recipes` done
 ```
@@ -90,10 +99,8 @@ Base Url : https://masak-apa.tomorisakura.vercel.app
 
 ---
 
-Undone
-
---
 
 #### Credits
+Copyright © 2020 Resky Arianto
 
 Build With 💙
