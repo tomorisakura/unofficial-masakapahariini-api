@@ -1,5 +1,5 @@
-const express = require('express');
-const route = express.Router();
+const router = require('express').Router();
+const route = router;
 
 const controller = require('../controller/index');
 
@@ -26,6 +26,7 @@ route.get('/api', (req, res) => {
 
 route.get('/api/recipes', controller.newRecipes);
 route.get('/api/recipes/:page', controller.newRecipesByPage);
+route.get('/api/recipes-length/', controller.newRecipesLimit);
 route.get('/api/categorys/recipes', controller.category);
 route.get('/api/articles/new', controller.article);
 route.get('/api/categorys/recipes/:key', controller.recipesByCategory);
@@ -39,9 +40,9 @@ route.get('/api/article/:tag/:key', controller.articleDetails);
 route.get('*', (req, res) => {
     res.status(404).json({
         method : req.method,
-        message : 'cant find spesific endpoint',
+        message : 'cant find spesific endpoint, please make sure you read a documentation',
         status : false,
-        code : 404,
+        code : 401,
     });
 });
 

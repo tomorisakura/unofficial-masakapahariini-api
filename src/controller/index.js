@@ -28,6 +28,7 @@ const fetchRecipes = (req, res, response) => {
                 dificulty : dificulty
             });
         });
+        console.log('fetch new recipes');
         res.send({
             method : req.method,
             status : true,
@@ -38,10 +39,60 @@ const fetchRecipes = (req, res, response) => {
     }
 }
 
+const limiterRecipes = (req, res, response, limiter) => {
+    try {
+        const $ = cheerio.load(response.data);
+        const element = $('#category-content');
+        let title, thumb, duration, servings, dificulty, key, url, href;
+        let recipe_list = [];
+        element.find('.category-posts');
+
+        element.find('.post-col').each((i, e) => {
+            title = $(e).find('a').attr('data-tracking-value');
+            thumb = $(e).find('.thumb-wrapper').find('img').attr('data-lazy-src');
+            duration = $(e).find('.time').find('small').text();
+            servings = $(e).find('.servings').find('small').text();
+            dificulty = $(e).find('.difficulty').find('small').text();
+            url = $(e).find('a').attr('href');
+            href = url.split('/');
+            key = href[4];
+
+            recipe_list.push({
+                title : title,
+                thumb : thumb,
+                key : key,
+                times : duration,
+                portion : servings,
+                dificulty : dificulty
+            });
+
+        });
+
+        const recipes_limit = recipe_list.splice(0, limiter);
+        console.log('limiter');
+        if(limiter > 10) {
+            res.send({
+                method : req.method,
+                status : false,
+                message : 'oops , you fetch a exceeded of limit, please set a limit below of 10',
+                results : null
+            });
+        } else {
+            res.send({
+                method : req.method,
+                status : true,
+                results : recipes_limit
+            });
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
 const Controller = {
     newRecipes : async (req, res) => {
         try {
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/`);
+            const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
             return fetchRecipes(req, res, response);
         } catch (error) {
             throw error;
@@ -51,7 +102,7 @@ const Controller = {
     newRecipesByPage : async (req, res) => {
         try {
             const page = req.params.page;
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/?halaman=${page}`);
+            const response = await services.fetchService(`${baseUrl}/resep-masakan/?halaman=${page}`, res);
             return fetchRecipes(req, res, response);
         } catch (error) {
             throw error;
@@ -60,7 +111,7 @@ const Controller = {
 
     category : async (req, res) => {
         try {
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/`);
+            const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
             const $ = cheerio.load(response.data);
             const element = $('#sidebar');
             let category, url, key;
@@ -93,7 +144,7 @@ const Controller = {
 
     article : async (req, res) => {
         try {
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/`);
+            const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
             const $ = cheerio.load(response.data);
             const element = $('.latest-posts-widget');
             let parse;
@@ -125,7 +176,7 @@ const Controller = {
     recipesByCategory : async (req, res) => {
         try {
             const key = req.params.key;
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/${key}`);
+            const response = await services.fetchService(`${baseUrl}/resep-masakan/${key}`, res);
             return fetchRecipes(req, res, response);
 
         } catch (error) {
@@ -137,7 +188,7 @@ const Controller = {
         try {
             const key = req.params.key;
             const page = req.params.page;
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/${key}/?halaman=${page}`);
+            const response = await services.fetchService(`${baseUrl}/resep-masakan/${key}/?halaman=${page}`, res);
             return fetchRecipes(req, res, response);
             
         } catch (error) {
@@ -148,7 +199,7 @@ const Controller = {
     recipesDetail : async (req, res) => {
         try {
             const key = req.params.key;
-            const response = await services.fetchService(`${baseUrl}/resep/${key}`);
+            const response = await services.fetchService(`${baseUrl}/resep/${key}`, res);
             const $ = cheerio.load(response.data);
             let metaDuration, metaServings, metaDificulty, metaIngredient;
             let title , thumb, user, datePublished, desc, quantity, ingredient, ingredients;
@@ -257,7 +308,7 @@ const Controller = {
         try {
             const query = req.query.q;
             console.log(query);
-            const response = await services.fetchService(`${baseUrl}/?s=${query}`);
+            const response = await services.fetchService(`${baseUrl}/?s=${query}`, res);
             const $ = cheerio.load(response.data);
             const element = $('#search-content');
 
@@ -297,7 +348,7 @@ const Controller = {
 
     articleCategory : async (req, res) => {
         try {
-            const response = await services.fetchService(baseUrl);
+            const response = await services.fetchService(baseUrl, res);
             const $ = cheerio.load(response.data);
 
             const element = $('#menu-item-286');
@@ -326,7 +377,7 @@ const Controller = {
     articleByCategory : async (req, res) => {
         try {
             const key = req.params.key;
-            const response = await services.fetchService(`${baseUrl}/${key}`);
+            const response = await services.fetchService(`${baseUrl}/${key}`, res);
 
             const $ = cheerio.load(response.data);
             const element = $('#category-content');
@@ -360,7 +411,7 @@ const Controller = {
         try {
             const tag = req.params.tag;
             const key = req.params.key;
-            const response = await services.fetchService(`${baseUrl}/${tag}/${key}`);
+            const response = await services.fetchService(`${baseUrl}/${tag}/${key}`, res);
 
             const $ = cheerio.load(response.data);
             const element = $('#main');
@@ -388,6 +439,16 @@ const Controller = {
                 results : article_object
             });
 
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    newRecipesLimit : async (req, res) => {
+        try {
+            const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
+            const limit = req.query.limit;
+            return limiterRecipes(req, res, response, limit);
         } catch (error) {
             throw error;
         }

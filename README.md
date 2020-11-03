@@ -14,6 +14,7 @@ Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js_
 | key   | is a unique key used to access the next endpoint example  ```key : 'resep-sambal-teri-petai'``` |
 | page | load a next of data |
 | tag    | is unique key of a article category to hit a detail of article|
+| limit    | set limit of result **note** make you sure set limit below of 10 |
 
 
 
@@ -31,10 +32,34 @@ Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js_
 /api/recipes/:page
 ```
 
+- __example__
+
+```
+/api/recipes/1
+```
+
+* `new-recipes-limit` done
+
+```
+/api/recipes-length/?limit=size
+```
+
+- __example__
+
+```
+/api/recipes-length/?limit=3
+```
+
 * `recipes-by-category` done
 
 ```
 /api/categorys/recipes/:key
+```
+
+- __example__
+
+```
+/api/categorys/recipes/masakan-hari-raya
 ```
 
 * `recipes-category` done
@@ -101,6 +126,6 @@ Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js_
 
 
 #### Credits
-Copyright © 2020 Resky Arianto
+Copyright © 2020 Reski Arianto
 
 Build With 💙
