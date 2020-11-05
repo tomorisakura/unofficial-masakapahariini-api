@@ -223,24 +223,25 @@ const Controller = {
 
             elementHeader.find('.recipe-info').each((i, e) => {
                 metaDuration = $(e).find('.time').find('small').text();
-                if (metaDuration.includes('\n')) {
+                metaServings = $(e).find('.servings').find('small').text();
+                metaDificulty = $(e).find('.difficulty').find('small').text();
+                if (metaDuration.includes('\n') && metaServings.includes('\n') && metaDificulty.includes('\n')) {
                     parseDuration = metaDuration.split('\n')[1].split(' ');
                     parseDuration.forEach( r => {
                         if(r !== "") duration = r;
                     });
+
+                    parseServings = metaServings.split('\n')[1].split(' ');
+                    parseServings.forEach(r => {
+                        if(r !== "") servingsArr.push(r);
+                    });
+                    servings = Array.from(servingsArr).join(' ');
+                    parseDificulty = metaDificulty.split('\n')[1].split(' ');
+                    parseDificulty.forEach(r => {
+                        if(r !== "") difficultyArr.push(r);
+                    });
+                    dificulty = Array.from(difficultyArr).join(' ');
                 }
-                metaServings = $(e).find('.servings').find('small').text();
-                parseServings = metaServings.split('\n')[1].split(' ');
-                parseServings.forEach(r => {
-                    if(r !== "") servingsArr.push(r);
-                });
-                servings = Array.from(servingsArr).join(' ');
-                metaDificulty = $(e).find('.difficulty').find('small').text();
-                parseDificulty = metaDificulty.split('\n')[1].split(' ');
-                parseDificulty.forEach(r => {
-                    if(r !== "") difficultyArr.push(r);
-                });
-                dificulty = Array.from(difficultyArr).join(' ');
 
                 object.title = title;
                 object.thumb = thumb;
