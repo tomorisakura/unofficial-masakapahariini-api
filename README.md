@@ -1,9 +1,12 @@
 ## Masakapahariini Api 🧙 🍳
 ---
 
-Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js__ 🌸
+![preview](https://github.com/tomorisakura/unofficial-masakapahariini-api/blob/main/asset/banner.png)
 
 ---
+
+Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js__ 🌸
+
 **Status** : Maintained 🚀
 
 ### Documentation
