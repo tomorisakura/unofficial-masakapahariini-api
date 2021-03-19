@@ -4,7 +4,7 @@
 Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js__ 🌸
 
 ---
-**Status** : On Progress
+**Status** : Maintained 🚀
 
 ### Documentation
 ---
@@ -12,7 +12,7 @@ Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js_
 | Field | Description |
 | ------ | ----------- |
 | key   | is a unique key used to access the next endpoint example  ```key : 'resep-sambal-teri-petai'``` |
-| page | load a next of data |
+| page | load a next of data if want to make pagination in your app |
 | tag    | is unique key of a article category to hit a detail of article|
 | limit    | set limit of result **note** make sure you set limit below of 10 |
 
@@ -22,113 +22,24 @@ Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js_
 ---
 **Base Url** : `https://masak-apa.tomorisakura.vercel.app`
 
-* `new-recipes` done
-```
-/api/recipes
-```
-* `new-recipes-by-page` done
-
-```
-/api/recipes/:page
-```
-
-- __example__
-
-```
-/api/recipes/1
-```
-
-* `new-recipes-limit` done
-
-```
-/api/recipes-length/?limit=size
-```
-
-- __example__
-
-```
-/api/recipes-length/?limit=3
-```
-
-* `recipes-by-category` done
-
-```
-/api/categorys/recipes/:key
-```
-
-- __example__
-
-```
-/api/categorys/recipes/masakan-hari-raya
-```
-
-* `recipes-category` done
-
-```
-/api/categorys/recipes
-```
-
-* `recipes-detail` done
-
-```
-/api/recipe/:key
-```
-
-* `search-recipes` done
-
-```
-/api/search/?q=parameter
-```
-
-- __example__
-
-```
-/api/search/?q=tahu
-```
-
-* `article-category` done
-
-```
-/api/categorys/article
-```
-
-* `article-by-category` done
-
-```
-/api/categorys/article/:key
-```
-
-- __example__
-
-```
-/api/categorys/article/makanan-gaya-hidup
-```
-
-* `article` done
-
-```
-/api/articles/new
-```
-
-* `article-details` done
-
-```
-/api/article/:tag/:key
-```
-
-- __example__
-
-```
-/api/article/makanan-gaya-hidup/papeda-dan-masakan-indonesia-timur
-```
-
+| Endpoint | Usage | Example |
+|----------|-------|---------|
+| new recipes | `/api/recipes` | - |
+| new recipes by page | `/api/recipes/:page` | `/api/recipes/1` |
+| new recipes limit | `/api/recipes-length/?limit=size` | `/api/recipes-length/?limit=5` |
+| recipes by category | `/api/categorys/recipes/:key` | `/api/categorys/recipes/masakan-hari-raya` |
+| recipes category | `/api/categorys/recipes` | - |
+| recipe detail | `/api/recipe/:key` | - |
+| search recipes | `/api/search/?q=parameter` | `/api/search/?q=coto` |
+| article categorys | `/api/categorys/article` | - |
+| article by category | `/api/categorys/article/:key` | `/api/categorys/article/makanan-gaya-hidup` |
+| article | `/api/articles/new` | - |
+| article detail | `/api/article/:tag/:key` | `/api/article/makanan-gaya-hidup/papeda-dan-masakan-indonesia-timur` |
 
 ### Show Case
 ---
 
 * __Masak Apa__ [(Android Kotlin 🧙‍♂️)](https://github.com/tomorisakura/masak-apa)
-
-
 
 #### Credits
 Copyright © 2020 Reski Arianto
