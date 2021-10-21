@@ -123,7 +123,8 @@ const Controller = {
                 const split = category.split(' ');
                 if (split.includes('Menu')) split.splice(0, 1);
                 const results = Array.from(split).join('-');
-                key = results.toLowerCase();
+                key = $(e).find('a').attr('href').split('/');
+                key = key[key.length - 2];
                 category_list.push({
                     category : category,
                     url : url,
