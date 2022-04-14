@@ -20,19 +20,19 @@ const fetchRecipes = (req, res, response) => {
             key = href[4];
 
             recipe_list.push({
-                title : title,
-                thumb : thumb,
-                key : key,
-                times : duration,
-                portion : servings,
-                dificulty : dificulty
+                title: title,
+                thumb: thumb,
+                key: key,
+                times: duration,
+                portion: servings,
+                dificulty: dificulty
             });
         });
         console.log('fetch new recipes');
         res.send({
-            method : req.method,
-            status : true,
-            results : recipe_list
+            method: req.method,
+            status: true,
+            results: recipe_list
         });
     } catch (error) {
         throw error;
@@ -58,30 +58,30 @@ const limiterRecipes = (req, res, response, limiter) => {
             key = href[4];
 
             recipe_list.push({
-                title : title,
-                thumb : thumb,
-                key : key,
-                times : duration,
-                portion : servings,
-                dificulty : dificulty
+                title: title,
+                thumb: thumb,
+                key: key,
+                times: duration,
+                portion: servings,
+                dificulty: dificulty
             });
 
         });
 
         const recipes_limit = recipe_list.splice(0, limiter);
         console.log('limiter');
-        if(limiter > 10) {
+        if (limiter > 10) {
             res.send({
-                method : req.method,
-                status : false,
-                message : 'oops , you fetch a exceeded of limit, please set a limit below of 10',
-                results : null
+                method: req.method,
+                status: false,
+                message: 'oops , you fetch a exceeded of limit, please set a limit below of 10',
+                results: null
             });
         } else {
             res.send({
-                method : req.method,
-                status : true,
-                results : recipes_limit
+                method: req.method,
+                status: true,
+                results: recipes_limit
             });
         }
     } catch (error) {
@@ -90,7 +90,7 @@ const limiterRecipes = (req, res, response, limiter) => {
 }
 
 const Controller = {
-    newRecipes : async (req, res) => {
+    newRecipes: async (req, res) => {
         try {
             const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
             return fetchRecipes(req, res, response);
@@ -99,7 +99,7 @@ const Controller = {
         }
     },
 
-    newRecipesByPage : async (req, res) => {
+    newRecipesByPage: async (req, res) => {
         try {
             const page = req.params.page;
             const response = await services.fetchService(`${baseUrl}/resep-masakan/?halaman=${page}`, res);
@@ -109,7 +109,7 @@ const Controller = {
         }
     },
 
-    category : async (req, res) => {
+    category: async (req, res) => {
         try {
             const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
             const $ = cheerio.load(response.data);
@@ -126,16 +126,16 @@ const Controller = {
                 key = $(e).find('a').attr('href').split('/');
                 key = key[key.length - 2];
                 category_list.push({
-                    category : category,
-                    url : url,
-                    key : key
+                    category: category,
+                    url: url,
+                    key: key
                 });
             });
 
             return res.send({
-                method : req.method,
-                status : true,
-                results : category_list
+                method: req.method,
+                status: true,
+                results: category_list
             });
 
         } catch (error) {
@@ -143,7 +143,7 @@ const Controller = {
         }
     },
 
-    article : async (req, res) => {
+    article: async (req, res) => {
         try {
             const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
             const $ = cheerio.load(response.data);
@@ -158,23 +158,23 @@ const Controller = {
                 parse = url.split('/');
                 console.log(parse.length);
                 article_lists.push({
-                    title : title,
-                    url : url,
-                    key : parse[3]
+                    title: title,
+                    url: url,
+                    key: parse[3]
                 });
             });
 
             return res.send({
-                method : req.method,
-                status : true,
-                results : article_lists
+                method: req.method,
+                status: true,
+                results: article_lists
             });
         } catch (error) {
             throw error;
         }
     },
 
-    recipesByCategory : async (req, res) => {
+    recipesByCategory: async (req, res) => {
         try {
             const key = req.params.key;
             const response = await services.fetchService(`${baseUrl}/resep-masakan/${key}`, res);
@@ -185,25 +185,25 @@ const Controller = {
         }
     },
 
-    recipesCategoryByPage : async (req, res) => {
+    recipesCategoryByPage: async (req, res) => {
         try {
             const key = req.params.key;
             const page = req.params.page;
             const response = await services.fetchService(`${baseUrl}/resep-masakan/${key}/?halaman=${page}`, res);
             return fetchRecipes(req, res, response);
-            
+
         } catch (error) {
             throw error;
         }
     },
 
-    recipesDetail : async (req, res) => {
+    recipesDetail: async (req, res) => {
         try {
             const key = req.params.key;
             const response = await services.fetchService(`${baseUrl}/resep/${key}`, res);
             const $ = cheerio.load(response.data);
             let metaDuration, metaServings, metaDificulty, metaIngredient;
-            let title , thumb, user, datePublished, desc, quantity, ingredient, ingredients;
+            let title, thumb, user, datePublished, desc, quantity, ingredient, ingredients;
             let parseDuration, parseServings, parseDificulty, parseIngredient;
             let duration, servings, dificulty;
             let servingsArr = [];
@@ -214,6 +214,7 @@ const Controller = {
             const elementNeeded = $('.needed-products');
             const elementIngredients = $('#ingredients-section');
             const elementTutorial = $('#steps-section');
+            const elementRelated = $('.posts-row')
             title = elementHeader.find('.title').text();
             thumb = elementHeader.find('.featured-img').attr('data-lazy-src');
             if (thumb === undefined) {
@@ -228,18 +229,18 @@ const Controller = {
                 metaDificulty = $(e).find('.difficulty').find('small').text();
                 if (metaDuration.includes('\n') && metaServings.includes('\n') && metaDificulty.includes('\n')) {
                     parseDuration = metaDuration.split('\n')[1].split(' ');
-                    parseDuration.forEach( r => {
-                        if(r !== "") duration = r;
+                    parseDuration.forEach(r => {
+                        if (r !== "") duration = r;
                     });
 
                     parseServings = metaServings.split('\n')[1].split(' ');
                     parseServings.forEach(r => {
-                        if(r !== "") servingsArr.push(r);
+                        if (r !== "") servingsArr.push(r);
                     });
                     servings = Array.from(servingsArr).join(' ');
                     parseDificulty = metaDificulty.split('\n')[1].split(' ');
                     parseDificulty.forEach(r => {
-                        if(r !== "") difficultyArr.push(r);
+                        if (r !== "") difficultyArr.push(r);
                     });
                     dificulty = Array.from(difficultyArr).join(' ');
                 }
@@ -249,9 +250,9 @@ const Controller = {
                 object.servings = servings;
                 object.times = duration;
                 object.dificulty = dificulty;
-                object.author = {user, datePublished};
+                object.author = { user, datePublished };
             });
-            
+
             elementDesc.each((i, e) => {
                 desc = $(e).find('p').text();
                 object.desc = desc;
@@ -263,8 +264,8 @@ const Controller = {
                 thumb_item = $(e).find('.product-img').find('img').attr('data-lazy-src');
                 need_item = $(e).find('.product-info').find('.product-name').text();
                 neededArr.push({
-                    item_name : need_item,
-                    thumb_item : thumb_item
+                    item_name: need_item,
+                    thumb_item: thumb_item
                 });
             });
 
@@ -277,13 +278,13 @@ const Controller = {
                 metaIngredient = $(e).find('.ingredient').text();
                 parseIngredient = metaIngredient.split('\n')[1].split(' ');
                 parseIngredient.forEach(r => {
-                    if(r !== "") term.push(r);
+                    if (r !== "") term.push(r);
                 });
                 ingredient = Array.from(term).join(' ');
                 ingredients = `${quantity} ${ingredient}`
                 ingredientsArr.push(ingredients)
             });
-            
+
             object.ingredient = ingredientsArr;
             let step, resultStep;
             let stepArr = [];
@@ -295,10 +296,25 @@ const Controller = {
 
             object.step = stepArr;
 
+            let relatedArticle = []
+
+            elementRelated.find('.posts-col').each((i, e) => {
+                let tempKey = $(e).find('.block-link').attr('href').substr(38).replace('/', '')
+
+                let obj = {
+                    title: $(e).find('.title').text().trim(),
+                    thumb: $(e).find('.thumbnail').attr('data-lazy-src'),
+                    key: tempKey
+                }
+                relatedArticle.push(obj)
+            })
+
+            object.related = relatedArticle
+
             res.send({
-                method : req.method,
-                status : true,
-                results : object
+                method: req.method,
+                status: true,
+                results: object
             });
 
         } catch (error) {
@@ -306,7 +322,7 @@ const Controller = {
         }
     },
 
-    searchRecipes : async (req, res) => {
+    searchRecipes: async (req, res) => {
         try {
             const query = req.query.q;
             console.log(query);
@@ -326,21 +342,21 @@ const Controller = {
                 difficulty = $(e).find('.recipe-info').find('.difficulty').find('small').text();
 
                 search_list.push({
-                    title : title,
-                    thumb : thumb,
-                    key : key,
-                    times : duration,
-                    serving : serving,
-                    difficulty : difficulty,
+                    title: title,
+                    thumb: thumb,
+                    key: key,
+                    times: duration,
+                    serving: serving,
+                    difficulty: difficulty,
                 });
             });
 
             const item = search_list.filter(result => result.times !== "");
 
             res.send({
-                method : req.method,
-                status : true,
-                results : item
+                method: req.method,
+                status: true,
+                results: item
             });
 
         } catch (error) {
@@ -348,7 +364,7 @@ const Controller = {
         }
     },
 
-    articleCategory : async (req, res) => {
+    articleCategory: async (req, res) => {
         try {
             const response = await services.fetchService(baseUrl, res);
             const $ = cheerio.load(response.data);
@@ -360,15 +376,15 @@ const Controller = {
                 title = $(e).find('a').text();
                 key = $(e).find('a').attr('href').split('/');
                 article_category_list.push({
-                    title : title,
-                    key : key[3]
+                    title: title,
+                    key: key[3]
                 })
             });
 
             res.send({
-                method : req.method,
-                status : true,
-                results : article_category_list
+                method: req.method,
+                status: true,
+                results: article_category_list
             });
 
         } catch (error) {
@@ -376,14 +392,14 @@ const Controller = {
         }
     },
 
-    articleByCategory : async (req, res) => {
+    articleByCategory: async (req, res) => {
         try {
             const key = req.params.key;
             const response = await services.fetchService(`${baseUrl}/${key}`, res);
 
             const $ = cheerio.load(response.data);
             const element = $('#category-content');
-            let title , thumb, tags, keys;
+            let title, thumb, tags, keys;
             let article_list = [];
             element.find('.category-posts').find('.post-col').each((i, e) => {
                 title = $(e).find('.inner-block').find('a').attr('data-tracking-value');
@@ -391,17 +407,17 @@ const Controller = {
                 tags = $(e).find('.post-info').find('small').text();
                 keys = $(e).find('.inner-block').find('a').attr('href').split('/')
                 article_list.push({
-                    title : title,
-                    thumb : thumb,
-                    tags : tags,
-                    key : keys[4]
+                    title: title,
+                    thumb: thumb,
+                    tags: tags,
+                    key: keys[4]
                 });
             });
 
             res.send({
-                method : req.method,
-                status : true,
-                results : article_list
+                method: req.method,
+                status: true,
+                results: article_list
             });
 
         } catch (error) {
@@ -409,7 +425,7 @@ const Controller = {
         }
     },
 
-    articleDetails : async (req, res) => {
+    articleDetails: async (req, res) => {
         try {
             const tag = req.params.tag;
             const key = req.params.key;
@@ -436,9 +452,9 @@ const Controller = {
             article_object.description = description;
 
             res.send({
-                method : req.method,
-                status : true,
-                results : article_object
+                method: req.method,
+                status: true,
+                results: article_object
             });
 
         } catch (error) {
@@ -446,7 +462,7 @@ const Controller = {
         }
     },
 
-    newRecipesLimit : async (req, res) => {
+    newRecipesLimit: async (req, res) => {
         try {
             const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
             const limit = req.query.limit;
