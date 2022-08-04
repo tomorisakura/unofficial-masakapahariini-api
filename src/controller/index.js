@@ -62,7 +62,7 @@ const limiterRecipes = (req, res, response, limiter) => {
                 thumb: thumb,
                 key: key,
                 times: duration,
-                serving: servings,: servings,
+                serving: servings,
                 dificulty: dificulty
             });
 
