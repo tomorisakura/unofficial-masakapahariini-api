@@ -6,7 +6,7 @@ const fetchRecipes = (req, res, response) => {
     try {
         const $ = cheerio.load(response.data);
         const element = $('#category-content');
-        let title, thumb, duration, servings, dificulty, key, url, href;
+        let title, thumb, duration, servings, difficulty, key, url, href;
         let recipe_list = [];
         element.find('.category-posts');
         element.find('.post-col').each((i, e) => {
@@ -14,7 +14,7 @@ const fetchRecipes = (req, res, response) => {
             thumb = $(e).find('.thumb-wrapper').find('img').attr('data-lazy-src');
             duration = $(e).find('.time').find('small').text();
             servings = $(e).find('.servings').find('small').text();
-            dificulty = $(e).find('.difficulty').find('small').text();
+            difficulty = $(e).find('.difficulty').find('small').text();
             url = $(e).find('a').attr('href');
             href = url.split('/');
             key = href[4];
@@ -25,7 +25,7 @@ const fetchRecipes = (req, res, response) => {
                 key: key,
                 times: duration,
                 serving: servings,
-                dificulty: dificulty
+                difficulty: difficulty
             });
         });
         console.log('fetch new recipes');
@@ -43,7 +43,7 @@ const limiterRecipes = (req, res, response, limiter) => {
     try {
         const $ = cheerio.load(response.data);
         const element = $('#category-content');
-        let title, thumb, duration, servings, dificulty, key, url, href;
+        let title, thumb, duration, servings, difficulty, key, url, href;
         let recipe_list = [];
         element.find('.category-posts');
 
@@ -52,7 +52,7 @@ const limiterRecipes = (req, res, response, limiter) => {
             thumb = $(e).find('.thumb-wrapper').find('img').attr('data-lazy-src');
             duration = $(e).find('.time').find('small').text();
             servings = $(e).find('.servings').find('small').text();
-            dificulty = $(e).find('.difficulty').find('small').text();
+            difficulty = $(e).find('.difficulty').find('small').text();
             url = $(e).find('a').attr('href');
             href = url.split('/');
             key = href[4];
@@ -63,7 +63,7 @@ const limiterRecipes = (req, res, response, limiter) => {
                 key: key,
                 times: duration,
                 serving: servings,
-                dificulty: dificulty
+                difficulty: difficulty
             });
 
         });
@@ -207,7 +207,7 @@ const Controller = {
             let metaDuration, metaServings, metaDificulty, metaIngredient;
             let title, thumb, user, datePublished, desc, quantity, ingredient, ingredients;
             let parseDuration, parseServings, parseDificulty, parseIngredient;
-            let duration, servings, dificulty;
+            let duration, servings, difficulty;
             let servingsArr = [];
             let difficultyArr = [];
             let object = {};
@@ -243,14 +243,14 @@ const Controller = {
                     parseDificulty.forEach(r => {
                         if (r !== "") difficultyArr.push(r);
                     });
-                    dificulty = Array.from(difficultyArr).join(' ');
+                    difficulty = Array.from(difficultyArr).join(' ');
                 }
 
                 object.title = title;
                 object.thumb = thumb;
                 object.servings = servings;
                 object.times = duration;
-                object.dificulty = dificulty;
+                object.difficulty = difficulty;
                 object.author = { user, datePublished };
             });
 
