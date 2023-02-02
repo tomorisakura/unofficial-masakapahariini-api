@@ -258,6 +258,8 @@ const Controller = {
             user = user[0].trim(); // <= author
             
             servings = elementHeader.find('._kritique-rate div').attr('style');
+            duration = elementHeader.find('._recipe-features').find('a:not([data-tracking])').text().trim();
+            difficulty = elementHeader.find('._recipe-features a[data-tracking]').text().trim()
 
             object.title = title;
             object.thumb = thumb;
