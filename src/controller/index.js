@@ -16,7 +16,7 @@ const fetchRecipes = (req, res, response) => {
             difficulty = $(e).find('._recipe-features a[data-tracking]').text().replace('\n', '').trim();
             servings = $(e).find('.servings').find('small').text();
             url = $(e).find('h3 a').attr('href');
-            console.log(url);
+            
             href = url.split('/');
             key = href[4];
 
@@ -142,29 +142,29 @@ const Controller = {
 
     category: async (req, res) => {
         try {
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
+            const response = await services.fetchService(`${baseUrl}/site-map/`, res);
             const $ = cheerio.load(response.data);
-            const element = $('#sidebar');
+            const element = $('#sitemap-page');
             let category, url, key;
             let category_list = [];
-            element.find('.explore-by-widget');
-            element.find('.category-col').each((i, e) => {
-                // image = $(e).find('.bg-medium').
-
-                category = $(e).find('a').attr('data-tracking-value');
-                url = $(e).find('a').attr('href');
-                const split = category.split(' ');
-                if (split.includes('Menu')) split.splice(0, 1);
-                const results = Array.from(split).join('-');
-                key = $(e).find('a').attr('href').split('/');
-                key = key[key.length - 2];
-                category_list.push({
-                    category: category,
-                    url: url,
-                    key: key
-                });
-            });
-
+            
+            // https://www.masakapahariini.com/site-map/
+                // ambil element ke 4 dari .mb-5.mb-md-7 ul
+            $(element.find('.mb-5.mb-md-7 ul')[4])
+                .each((i, e) => {
+                    // loop untuk link
+                    $(e).find('li a').each((index, el) => {
+                        url = $(el).attr('href');
+                        key = $(el).attr('href').split('/');
+                        key = key[key.length - 2];
+                        category = key.replace('-', ' ')
+                        category_list.push({
+                            category: category,
+                            url: url,
+                            key: key
+                        });
+                    })  
+                })
             return res.send({
                 method: req.method,
                 status: true,
@@ -180,29 +180,6 @@ const Controller = {
         try {
             const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
             return fetchArticle(req, res, response)
-            const $ = cheerio.load(response.data);
-            const element = $('.latest-posts-widget');
-            let parse;
-            let title, url;
-            let article_lists = [];
-            element.find('.posts-row');
-            element.find('.posts-col').each((i, e) => {
-                title = $(e).find('a').attr('data-tracking-value');
-                url = $(e).find('a').attr('href');
-                parse = url.split('/');
-                console.log(parse.length);
-                article_lists.push({
-                    title: title,
-                    url: url,
-                    key: parse[3]
-                });
-            });
-
-            return res.send({
-                method: req.method,
-                status: true,
-                results: article_lists
-            });
         } catch (error) {
             throw error;
         }
@@ -306,7 +283,6 @@ const Controller = {
             elementTutorial.find('.step').each((i, e) => {
                 step = $(e).find('span.TextRun').text();
                 resultStep = `${i + 1}. ${step}`
-                console.log(resultStep);
                 stepArr.push(resultStep);
             });
 
@@ -326,7 +302,6 @@ const Controller = {
     searchRecipes: async (req, res) => {
         try {
             const query = req.query.s;
-            console.log(query);
             const response = await services.fetchService(`${baseUrl}/?s=${query}`, res);
             return fetchRecipes(req, res, response);
         } catch (error) {
