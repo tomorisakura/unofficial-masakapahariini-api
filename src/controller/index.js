@@ -188,7 +188,7 @@ const Controller = {
     recipesByCategory: async (req, res) => {
         try {
             const key = req.params.key;
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/${key}`, res);
+            const response = await services.fetchService(`${baseUrl}/resep/${key}`, res);
             return fetchRecipes(req, res, response);
 
         } catch (error) {
