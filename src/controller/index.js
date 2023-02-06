@@ -178,7 +178,7 @@ const Controller = {
 
     article: async (req, res) => {
         try {
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/`, res);
+            const response = await services.fetchService(`${baseUrl}/artikel/`, res);
             return fetchArticle(req, res, response)
         } catch (error) {
             throw error;
