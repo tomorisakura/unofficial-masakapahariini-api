@@ -71,6 +71,38 @@ const fetchArticle = (req, res, response) => {
     }
 }
 
+const fetchCategory =(req, res, response, index) => {
+    const $ = cheerio.load(response.data);
+    const element = $('#sitemap-page');
+    let category, url, key;
+    let category_list = [];
+    
+    // https://www.masakapahariini.com/site-map/
+        // ambil element ke 4 dari .mb-5.mb-md-7 ul
+    $(element.find('.mb-5.mb-md-7 ul')[index])
+        .each((i, e) => {
+            // loop untuk link
+            $(e).find('li a').each((index, el) => {
+                url = $(el).attr('href');
+                key = $(el).attr('href').split('/');
+                key = key[key.length - 2];
+                category = key.replace('-', ' ')
+                category_list.push({
+                    category: category,
+                    url: url,
+                    key: key
+                });
+            })  
+        }
+    )
+        
+    return res.send({
+        method: req.method,
+        status: true,
+        results: category_list
+    });
+}
+
 const limiterRecipes = (req, res, response, limiter) => {
     try {
         const $ = cheerio.load(response.data);
@@ -143,34 +175,8 @@ const Controller = {
     category: async (req, res) => {
         try {
             const response = await services.fetchService(`${baseUrl}/site-map/`, res);
-            const $ = cheerio.load(response.data);
-            const element = $('#sitemap-page');
-            let category, url, key;
-            let category_list = [];
+            return fetchCategory(req, res, response, 4);
             
-            // https://www.masakapahariini.com/site-map/
-                // ambil element ke 4 dari .mb-5.mb-md-7 ul
-            $(element.find('.mb-5.mb-md-7 ul')[4])
-                .each((i, e) => {
-                    // loop untuk link
-                    $(e).find('li a').each((index, el) => {
-                        url = $(el).attr('href');
-                        key = $(el).attr('href').split('/');
-                        key = key[key.length - 2];
-                        category = key.replace('-', ' ')
-                        category_list.push({
-                            category: category,
-                            url: url,
-                            key: key
-                        });
-                    })  
-                })
-            return res.send({
-                method: req.method,
-                status: true,
-                results: category_list
-            });
-
         } catch (error) {
             throw error;
         }
@@ -200,7 +206,7 @@ const Controller = {
         try {
             const key = req.params.key;
             const page = req.params.page;
-            const response = await services.fetchService(`${baseUrl}/resep-masakan/${key}/?halaman=${page}`, res);
+            const response = await services.fetchService(`${baseUrl}/resep/${key}/page/${page}`, res);
             return fetchRecipes(req, res, response);
 
         } catch (error) {
@@ -311,27 +317,8 @@ const Controller = {
 
     articleCategory: async (req, res) => {
         try {
-            const response = await services.fetchService(baseUrl, res);
-            const $ = cheerio.load(response.data);
-
-            const element = $('#menu-item-286');
-            let title, key;
-            let article_category_list = [];
-            element.find('.sub-menu').find('.menu-item').each((i, e) => {
-                title = $(e).find('a').text();
-                key = $(e).find('a').attr('href').split('/');
-                article_category_list.push({
-                    title: title,
-                    key: key[3]
-                })
-            });
-
-            res.send({
-                method: req.method,
-                status: true,
-                results: article_category_list
-            });
-
+            const response = await services.fetchService(`${baseUrl}/site-map/`, res);
+            return fetchCategory(req, res, response, 2)
         } catch (error) {
             throw error;
         }
@@ -341,30 +328,7 @@ const Controller = {
         try {
             const key = req.params.key;
             const response = await services.fetchService(`${baseUrl}/${key}`, res);
-
-            const $ = cheerio.load(response.data);
-            const element = $('#category-content');
-            let title, thumb, tags, keys;
-            let article_list = [];
-            element.find('.category-posts').find('.post-col').each((i, e) => {
-                title = $(e).find('.inner-block').find('a').attr('data-tracking-value');
-                thumb = $(e).find('.inner-block').find('a').find('.thumb-wrapper').find('img').attr('data-lazy-src');
-                tags = $(e).find('.post-info').find('small').text();
-                keys = $(e).find('.inner-block').find('a').attr('href').split('/')
-                article_list.push({
-                    title: title,
-                    thumb: thumb,
-                    tags: tags,
-                    key: keys[4]
-                });
-            });
-
-            res.send({
-                method: req.method,
-                status: true,
-                results: article_list
-            });
-
+            return fetchArticle(req, res, response)
         } catch (error) {
             throw error;
         }
