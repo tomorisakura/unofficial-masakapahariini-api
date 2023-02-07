@@ -7,7 +7,7 @@
 
 Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js__ 🌸
 
-** ⚠️ Status** : Maintained 🚀 (will be updated with new changes 🚧)
+> **⚠️ Status** : Successfully Updated 🚀 (Fixing error with different route access  🚧)
 
 ### Documentation
 ---
