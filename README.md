@@ -39,7 +39,7 @@ Food recipes api bahasa Indonesia 🇮🇩 build with __Cheerio__ and __Node js_
 | article | `/api/articles/new` | - |
 | article detail | `/api/article/:tag/:key` | `/api/article/makanan-gaya-hidup/papeda-dan-masakan-indonesia-timur` |
 
-> **Note**: Especially for article detail descriptions, it will return a string in HTML format, if you use Android, learn [How to display HTML using Android Compose](https://proandroiddev.com/how-to-display-html-using-android-compose-c59e24ec0c6f)
+> ⚠️ **Note** ⚠️: Especially for article detail descriptions, it will return a string in HTML format, if you use Android, learn [How to display HTML using Android Compose](https://proandroiddev.com/how-to-display-html-using-android-compose-c59e24ec0c6f)
 
 ### Show Case
 ---
