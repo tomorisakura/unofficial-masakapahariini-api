@@ -13,7 +13,8 @@ const fetchRecipes = (req, res, response) => {
             title = $(e).find('h3 a').attr('data-tracking-value');
             thumb = $(e).find('picture').find('img').attr('data-src');
             duration = $(e).find('._recipe-features a').text().trim().split('\n')[0].trim();
-            difficulty = $(e).find('._recipe-features a[data-tracking]').text().replace('\n', '').trim();
+            difficulty = $(e).find('._recipe-features a[data-tracking]').last().text().replace('\n', '').trim();
+            kkal = $(e).find('._recipe-features a.icon_fire').text().trim("");
             servings = $(e).find('.servings').find('small').text();
             url = $(e).find('h3 a').attr('href');
             
@@ -26,7 +27,8 @@ const fetchRecipes = (req, res, response) => {
                 key: key,
                 times: duration,
                 serving: servings,
-                difficulty: difficulty
+                difficulty: difficulty,
+                calories: kkal,
             });
         });
         console.log('fetch new recipes');
@@ -73,6 +75,38 @@ const fetchArticle = (req, res, response) => {
 
 const fetchCategory =(req, res, response, index) => {
     const $ = cheerio.load(response.data);
+    const element = $('#menu-menu-tajuk');
+    let category, url, key;
+    let category_list = [];
+    
+    // https://www.masakapahariini.com/
+        // ambil element di menu bar
+    $(element.find('ul.sub-menu')[index])
+        .each((i, e) => {
+            // loop untuk link
+            $(e).find('li a').each((index, el) => {
+                url = $(el).attr('href');
+                key = $(el).attr('href').split('/');
+                key = key[key.length - 2];
+                category = key.replace('-', ' ')
+                category_list.push({
+                    category: category,
+                    url: url,
+                    key: key
+                });
+            })
+        }
+    )
+        
+    return res.send({
+        method: req.method,
+        status: true,
+        results: category_list
+    });
+}
+
+const fetchProduct =(req, res, response, index) => {
+    const $ = cheerio.load(response.data);
     const element = $('#sitemap-page');
     let category, url, key;
     let category_list = [];
@@ -116,7 +150,9 @@ const limiterRecipes = (req, res, response, limiter) => {
             thumb = $(e).find('picture').find('img').attr('data-src');
             duration = $(e).find('._recipe-features a').text().trim().split('\n')[0].trim();
             difficulty = $(e).find('._recipe-features a[data-tracking]').text().replace('\n', '').trim();
+            servings = $(e).find('.servings').find('small').text();
             url = $(e).find('h3 a').attr('href');
+            
             href = url.split('/');
             key = href[4];
 
@@ -128,7 +164,6 @@ const limiterRecipes = (req, res, response, limiter) => {
                 serving: servings,
                 difficulty: difficulty
             });
-
         });
 
         const recipes_limit = recipe_list.splice(0, limiter);
@@ -174,8 +209,8 @@ const Controller = {
 
     category: async (req, res) => {
         try {
-            const response = await services.fetchService(`${baseUrl}/site-map/`, res);
-            return fetchCategory(req, res, response, 4);
+            const response = await services.fetchService(`${baseUrl}/`, res);
+            return fetchCategory(req, res, response, 0);
             
         } catch (error) {
             throw error;
@@ -221,7 +256,7 @@ const Controller = {
             const $ = cheerio.load(response.data);
             let metaDuration, metaServings, metaDificulty, metaIngredient;
             let title, thumb, user, datePublished, desc, quantity, ingredient, ingredients, time;
-            let parseDuration, parseServings, parseDificulty, parseIngredient;
+            let parseDuration, parseServings, parseDificulty, parseIngredient, rating;
             let duration, servings, difficulty;
             let servingsArr = [];
             let difficultyArr = [];
@@ -231,8 +266,11 @@ const Controller = {
             const elementNeeded = $('._product-popup');
             const elementIngredients = $('div._recipe-ingredients');
             const elementTutorial = $('._recipe-steps');
+            // const elementReview = $('section._kritique-reviews');
             title = elementHeader.find('header h1').text().replace('\n', '').trim();
             thumb = elementHeader.find('picture .image').attr('data-src');
+            // rating = elementReview.find('.kr-review-header-title');
+            // console.log(rating.html());
             if (thumb === undefined) {
                 thumb = null;
             }
@@ -242,7 +280,8 @@ const Controller = {
             
             servings = elementHeader.find('._kritique-rate div').attr('style');
             duration = elementHeader.find('._recipe-features').find('a:not([data-tracking])').text().trim();
-            difficulty = elementHeader.find('._recipe-features a[data-tracking]').text().trim()
+            difficulty = elementHeader.find('._recipe-features a[data-tracking]').last().text().trim()
+            calories = elementHeader.find('._recipe-features a.icon_fire').last().text().trim()
 
             object.title = title;
             object.thumb = thumb;
@@ -262,7 +301,7 @@ const Controller = {
                 thumb_item = $(e).find('picture.thumbnail').find('img').attr('data-src');
                 need_item = $(e).find('div.title').text().replace(/\t/g, '');
                 neededArr.push({
-                    item_name: need_item.replace('\n', ''),
+                    item_name: need_item.replace('\n', '').trim(),
                     thumb_item: thumb_item
                 });
             });
@@ -287,7 +326,7 @@ const Controller = {
             let step, resultStep;
             let stepArr = [];
             elementTutorial.find('.step').each((i, e) => {
-                step = $(e).find('span.TextRun').text();
+                step = $(e).find('div.content').text().trim();
                 resultStep = `${i + 1}. ${step}`
                 stepArr.push(resultStep);
             });
@@ -307,7 +346,7 @@ const Controller = {
 
     searchRecipes: async (req, res) => {
         try {
-            const query = req.query.s;
+            const query = req.query.s || req.query.q;
             const response = await services.fetchService(`${baseUrl}/?s=${query}`, res);
             return fetchRecipes(req, res, response);
         } catch (error) {
@@ -318,7 +357,7 @@ const Controller = {
     articleCategory: async (req, res) => {
         try {
             const response = await services.fetchService(`${baseUrl}/site-map/`, res);
-            return fetchCategory(req, res, response, 2)
+            return fetchCategory(req, res, response, 1)
         } catch (error) {
             throw error;
         }
@@ -342,8 +381,10 @@ const Controller = {
 
             const $ = cheerio.load(response.data);
             const element = $('.content');
+            const tagsElement = $('._global-tags div.d-flex');
 
-            let title, thumbs, author, published, description;
+            let title, thumbs, author, published, description, descriptionRaw;
+            const tags = [];
             let article_object = {};
             title = element.find('._article-header').find('.title').text();
             author = element.find('.info').find('.author').text().split('|');
@@ -352,14 +393,25 @@ const Controller = {
             thumbs = element.find('picture.thumbnail').find('img').attr('data-src');
 
             element.find('._rich-content').each((i, e) => {
-                description = $(e).find('p').text();
+                description = $(e).find('p').text().trim();
+                descriptionRaw = $(e).html().trim();
             });
+
+            tagsElement.find("a").each((i, e) => {
+                tags.push({
+                    category: $(e).text().trim().toLowerCase(),
+                    url: $(e).attr('href'),
+                    key: $(e).attr('href').split("=")[2],
+                })
+            })
 
             article_object.title = title.trim();
             article_object.thumb = thumbs.trim();
             article_object.author = author;
             article_object.date_published = published;
             article_object.description = description;
+            article_object.descriptionRaw = descriptionRaw;
+            article_object.tags = tags;
 
             res.send({
                 method: req.method,
