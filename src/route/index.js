@@ -7,7 +7,7 @@ route.get('/', (req, res) => {
     res.send({
         greet : 'Hello there 👋',
         message : 'visit link on bellow for documentation about masak apa hari ini 👇',
-        documentation : 'https://github.com/tomorisakura/unofficial-masakapahariini-api'
+        documentation : 'https://github.com/dhino12/unofficial-masakapahariini-api'
     });
 });
 
